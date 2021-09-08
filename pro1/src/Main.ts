@@ -1,4 +1,6 @@
 import GameConfig from "./GameConfig";
+import MainUI from "./script/uis/MainUI";
+import { ui } from "./ui/layaMaxUI";
 import Loader = Laya.Loader;
 import Handler = Laya.Handler;
 class Main {
@@ -31,6 +33,7 @@ class Main {
 
 		var urls: Array<any> = [
 			{ url: "res/layabox.png", type: Loader.IMAGE },
+			{ url: "res/atlas/ui.atlas", type: Loader.ATLAS },
 			{ url: "res/atlas/comp.atlas", type: Loader.ATLAS }
 		];
 		Laya.loader.load(urls, Handler.create(this, this.onAssetLoaded), Handler.create(this, this.onLoading, null, false));
@@ -41,8 +44,11 @@ class Main {
 	}
 	private onAssetLoaded(): void {
 		// 使用texture
-		console.log("加载结束");
-		this.onConfigLoaded();
+		console.log("ui资源加载结束");
+		let resource: Array<string> = [
+			"res/Asset3D/Conventional/level1.ls"
+		];
+		Laya.loader.create(resource, Laya.Handler.create(this, this.onAsset3DLoaded), Handler.create(this, this.onLoading, null, false));
 	}
 
 	// 加载进度侦听器
@@ -54,9 +60,11 @@ class Main {
 		console.log("加载失败: " + err);
 	}
 
-	onConfigLoaded(): void {
+	onAsset3DLoaded(): void {
+		console.log("3d资源加载结束");
 		//加载IDE指定的场景
-		GameConfig.startScene && Laya.Scene.open(GameConfig.startScene);
+		// GameConfig.startScene && Laya.Scene.open(GameConfig.startScene);
+		Laya.stage.addChild(new MainUI());
 	}
 }
 //激活启动类

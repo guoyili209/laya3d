@@ -3,13 +3,15 @@ import View=Laya.View;
 import Dialog=Laya.Dialog;
 import Scene=Laya.Scene;
 var REG: Function = Laya.ClassUtils.regClass;
-export module ui.test {
-    export class TestSceneUI extends Scene {
+export module ui {
+    export class MainUI extends Scene {
+		public startBtn:Laya.Image;
+        public static  uiView:any ={"type":"Scene","props":{"width":750,"height":1334},"compId":2,"child":[{"type":"Image","props":{"y":994,"x":309,"width":66,"skin":"ui/TutorialHand.png","height":90},"compId":34,"child":[{"type":"Label","props":{"y":-30,"text":"滑动屏幕玩游戏","strokeColor":"#000000","stroke":1,"fontSize":30,"font":"Microsoft YaHei","color":"#ffffff","centerX":0,"bold":true},"compId":38}]},{"type":"Image","props":{"y":0,"x":0,"var":"startBtn","top":0,"skin":"ui/BG_rounded_512.png","right":0,"left":0,"bottom":0},"compId":36}],"loadList":["ui/TutorialHand.png","ui/BG_rounded_512.png"],"loadList3D":[]};
         constructor(){ super()}
         createChildren():void {
             super.createChildren();
-            this.loadScene("test/TestScene");
+            this.createView(MainUI.uiView);
         }
     }
-    REG("ui.test.TestSceneUI",TestSceneUI);
+    REG("ui.MainUI",MainUI);
 }

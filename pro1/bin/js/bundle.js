@@ -1,133 +1,53 @@
 (function () {
     'use strict';
 
-    class SceneManager extends Laya.Script3D {
-        constructor() { super(); }
-        onAwake() {
-            SceneManager.Instance = this;
-        }
-        onStart() {
-            console.log("SceneMgr start");
-        }
-    }
-
-    class MainCamera extends Laya.Script3D {
-        constructor() {
-            super();
-            this.intType = 1000;
-            this.numType = 1000;
-            this.strType = "hello laya";
-            this.boolType = true;
-        }
-        onAwake() {
-            this.rot = new Laya.Quaternion();
-            this._upVec = new Laya.Vector3(0, 1, 0);
-            this._camera = this.owner;
-            this._newPos = new Laya.Vector3(0, 0, 0);
-            this._newRoation = new Laya.Quaternion();
-        }
-        onEnable() {
-        }
-        onDisable() {
-        }
-        onUpdate() {
-            let nu = Laya.timer.delta * 0.0001;
-            if (SceneManager.Instance.player) {
-                let pos = this._camera.transform.localPosition;
-                this.rot.rotateY(nu, this.rot);
-                let dir = new Laya.Vector3();
-                Laya.Vector3.subtract(pos, SceneManager.Instance.player.transform.localPosition, dir);
-                Laya.Vector3.transformQuat(dir, this.rot, dir);
-                this._newPos.setValue(0, 0, 0);
-                Laya.Vector3.add(SceneManager.Instance.player.transform.localPosition, dir, this._newPos);
-                this._camera.transform.position = this._newPos;
-            }
-        }
-    }
-
-    class Movement extends Laya.Script3D {
-        constructor() {
-            super();
-            this.intType = 1000;
-            this.numType = 1000;
-            this.strType = "hello laya";
-            this.boolType = true;
-        }
-        onAwake() {
-        }
-        onEnable() {
-        }
-        onStart() {
-            this._cube = this.owner;
-            this._transform = this._cube.transform;
-        }
-        onDisable() {
-        }
-        onUpdate() {
-        }
-    }
-
-    var Scene = Laya.Scene;
-    var REG = Laya.ClassUtils.regClass;
-    var ui;
-    (function (ui) {
-        var test;
-        (function (test) {
-            class TestSceneUI extends Scene {
-                constructor() { super(); }
-                createChildren() {
-                    super.createChildren();
-                    this.loadScene("test/TestScene");
-                }
-            }
-            test.TestSceneUI = TestSceneUI;
-            REG("ui.test.TestSceneUI", TestSceneUI);
-        })(test = ui.test || (ui.test = {}));
-    })(ui || (ui = {}));
-
-    class GameUI extends ui.test.TestSceneUI {
-        constructor() {
-            super();
-            var scene = Laya.stage.addChild(new Laya.Scene3D());
-            var camera = (scene.addChild(new Laya.Camera(0, 0.1, 100)));
-            camera.transform.translate(new Laya.Vector3(0, 3, 3));
-            camera.transform.rotate(new Laya.Vector3(-30, 0, 0), true, false);
-            camera.addComponent(MainCamera);
-            var directionLight = scene.addChild(new Laya.DirectionLight());
-            directionLight.color = new Laya.Vector3(0.6, 0.6, 0.6);
-            directionLight.transform.worldMatrix.setForward(new Laya.Vector3(1, -1, 0));
-            var box = scene.addChild(new Laya.MeshSprite3D(Laya.PrimitiveMesh.createBox(1, 1, 1)));
-            box.transform.rotate(new Laya.Vector3(0, 45, 0), false, false);
-            var material = new Laya.BlinnPhongMaterial();
-            material.albedoTexture = Laya.loader.getRes("res/layabox.png");
-            box.meshRenderer.material = material;
-            box.addComponent(Movement);
-            let scenemMgr = scene.addComponent(SceneManager);
-            scenemMgr.player = box;
-        }
-    }
-
     class GameConfig {
         constructor() {
         }
         static init() {
             var reg = Laya.ClassUtils.regClass;
-            reg("script/GameUI.ts", GameUI);
         }
     }
-    GameConfig.width = 640;
-    GameConfig.height = 1136;
+    GameConfig.width = 750;
+    GameConfig.height = 1334;
     GameConfig.scaleMode = "fixedwidth";
-    GameConfig.screenMode = "none";
+    GameConfig.screenMode = "vertical";
     GameConfig.alignV = "top";
     GameConfig.alignH = "left";
-    GameConfig.startScene = "test/TestScene.scene";
+    GameConfig.startScene = "Main.scene";
     GameConfig.sceneRoot = "";
     GameConfig.debug = false;
     GameConfig.stat = false;
     GameConfig.physicsDebug = false;
     GameConfig.exportSceneToJson = true;
     GameConfig.init();
+
+    var Scene = Laya.Scene;
+    var REG = Laya.ClassUtils.regClass;
+    var ui;
+    (function (ui) {
+        class MainUI extends Scene {
+            constructor() {
+                super();
+            }
+            createChildren() {
+                super.createChildren();
+                this.createView(MainUI.uiView);
+            }
+        }
+        MainUI.uiView = { "type": "Scene", "props": { "width": 750, "height": 1334 }, "compId": 2, "child": [{ "type": "Image", "props": { "y": 994, "x": 309, "width": 66, "skin": "ui/TutorialHand.png", "height": 90 }, "compId": 34, "child": [{ "type": "Label", "props": { "y": -30, "text": "滑动屏幕玩游戏", "strokeColor": "#000000", "stroke": 1, "fontSize": 30, "font": "Microsoft YaHei", "color": "#ffffff", "centerX": 0, "bold": true }, "compId": 38 }] }, { "type": "Image", "props": { "y": 0, "x": 0, "var": "startBtn", "top": 0, "skin": "ui/BG_rounded_512.png", "right": 0, "left": 0, "bottom": 0 }, "compId": 36 }], "loadList": ["ui/TutorialHand.png", "ui/BG_rounded_512.png"], "loadList3D": [] };
+        ui.MainUI = MainUI;
+        REG("ui.MainUI", MainUI);
+    })(ui || (ui = {}));
+
+    class MainUI extends ui.MainUI {
+        constructor() {
+            super();
+            this.startBtn.alpha = 0;
+            let levelSp3d = Laya.loader.getRes("res/Asset3D/Conventional/level1.ls");
+            this.addChild(levelSp3d);
+        }
+    }
 
     var Loader = Laya.Loader;
     var Handler = Laya.Handler;
@@ -156,14 +76,18 @@
         onVersionLoaded() {
             var urls = [
                 { url: "res/layabox.png", type: Loader.IMAGE },
+                { url: "res/atlas/ui.atlas", type: Loader.ATLAS },
                 { url: "res/atlas/comp.atlas", type: Loader.ATLAS }
             ];
             Laya.loader.load(urls, Handler.create(this, this.onAssetLoaded), Handler.create(this, this.onLoading, null, false));
             Laya.loader.on(Laya.Event.ERROR, this, this.onError);
         }
         onAssetLoaded() {
-            console.log("加载结束");
-            this.onConfigLoaded();
+            console.log("ui资源加载结束");
+            let resource = [
+                "res/Asset3D/Conventional/level1.ls"
+            ];
+            Laya.loader.create(resource, Laya.Handler.create(this, this.onAsset3DLoaded), Handler.create(this, this.onLoading, null, false));
         }
         onLoading(progress) {
             console.log("加载进度: " + progress);
@@ -171,8 +95,9 @@
         onError(err) {
             console.log("加载失败: " + err);
         }
-        onConfigLoaded() {
-            GameConfig.startScene && Laya.Scene.open(GameConfig.startScene);
+        onAsset3DLoaded() {
+            console.log("3d资源加载结束");
+            Laya.stage.addChild(new MainUI());
         }
     }
     new Main();

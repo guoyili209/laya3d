@@ -36,14 +36,14 @@ export default class MainCamera extends Laya.Script3D {
     onUpdate() {
         let nu: number = Laya.timer.delta * 0.0001;
         if (SceneManager.Instance.player) {
-            let pos = this._camera.transform.localPosition;
-            this.rot.rotateY(nu, this.rot);
-            let dir: Laya.Vector3 = new Laya.Vector3();
-            Laya.Vector3.subtract(pos, SceneManager.Instance.player.transform.localPosition, dir); //计算从圆心指向摄像头的朝向向量
-            Laya.Vector3.transformQuat(dir, this.rot, dir);//旋转此向量
-            this._newPos.setValue(0, 0, 0);
-            Laya.Vector3.add(SceneManager.Instance.player.transform.localPosition, dir, this._newPos);//移动摄像机位置
-            this._camera.transform.position = this._newPos;
+            // let pos = this._camera.transform.localPosition;
+            // this.rot.rotateY(nu, this.rot);
+            // let dir: Laya.Vector3 = new Laya.Vector3();
+            // Laya.Vector3.subtract(pos, SceneManager.Instance.player.transform.localPosition, dir); //计算从圆心指向摄像头的朝向向量
+            // Laya.Vector3.transformQuat(dir, this.rot, dir);//旋转此向量
+            // this._newPos.setValue(0, 0, 0);
+            // Laya.Vector3.add(SceneManager.Instance.player.transform.localPosition, dir, this._newPos);//移动摄像机位置
+            // this._camera.transform.position = this._newPos;
             // let myrot: Laya.Quaternion = this._camera.transform.localRotation;
             // Laya.Quaternion.multiply(this.rot, myrot, this._newRoation); //设置角度
             // this._camera.transform.localRotation = this._newRoation;
