@@ -1,6 +1,18 @@
 (function () {
     'use strict';
 
+    var EventDispatcher = Laya.EventDispatcher;
+    class GameEvent {
+    }
+    GameEvent.eventDispatcher = new EventDispatcher;
+    class GameEventType {
+    }
+    GameEventType.EnterLevel = "enter_level";
+    GameEventType.StartGame = "start_game";
+    GameEventType.GameOver = "game_over";
+    GameEventType.OpenGate = "open_gate";
+    GameEventType.OpenChest = "open_chest";
+
     class GameConfig {
         constructor() {
         }
@@ -21,6 +33,275 @@
     GameConfig.physicsDebug = false;
     GameConfig.exportSceneToJson = true;
     GameConfig.init();
+
+    class AssetsPathManager {
+        constructor() {
+        }
+        static Assets3dPath() {
+            return this.levelAssetPathArr;
+        }
+        static GetLevelAssetsPath(levelNu) {
+            console.log(levelNu);
+            return this.levelAssetPathArr[levelNu - 1];
+        }
+    }
+    AssetsPathManager.levelAssetPathArr = [
+        "res/Asset3D/Conventional/level1.ls",
+        "res/Asset3D/Conventional/level2.ls"
+    ];
+
+    class GameDataManager {
+        constructor() {
+            this.curLevelNu = -1;
+        }
+        static get Instance() {
+            if (this._instance == null) {
+                this._instance = new GameDataManager();
+            }
+            return this._instance;
+        }
+        InitData() {
+            this.curLevelNu = 1;
+        }
+    }
+
+    class ChestBehavior extends Laya.Script3D {
+        constructor() {
+            super();
+        }
+        onStart() {
+            GameEvent.eventDispatcher.on(GameEventType.OpenChest, this, this._OpenChest);
+        }
+        _OpenChest() {
+            console.log("打开箱子");
+        }
+    }
+
+    class GateBehavior extends Laya.Script3D {
+        constructor() {
+            super();
+            this.direction = "left";
+        }
+        onAwake() {
+        }
+        onStart() {
+            GameEvent.eventDispatcher.on(GameEventType.OpenGate, this, this._OpenGate);
+        }
+        _OpenGate() {
+        }
+        onTriggerEnter(other) {
+        }
+    }
+
+    class ItemManager {
+        constructor() { }
+    }
+    class ItemType {
+    }
+    ItemType.angle_a_book = "Angle_A-Book";
+    ItemType.demon_d_skull = "Demon_D-Skull";
+
+    class ItemBehavior extends Laya.Script3D {
+        constructor() { super(); }
+        onStart() {
+            this.type = this.owner.name;
+        }
+        onTriggerEnter(other) {
+            if (other.owner.name == "Player") {
+                if (this.type.indexOf(ItemType.angle_a_book) > -1) {
+                    console.log("angle a book");
+                }
+                else if (this.type.indexOf(ItemType.demon_d_skull) > -1) {
+                    console.log("demon d skull");
+                }
+            }
+        }
+    }
+
+    var Vector3 = Laya.Vector3;
+    class MainCamera extends Laya.Script3D {
+        constructor() {
+            super();
+            this.intType = 1000;
+            this.numType = 1000;
+            this.strType = "hello laya";
+            this.boolType = true;
+            this._distanceUp = 15;
+            this._distanceAway = 10;
+            this._smooth = 2;
+            this._camDepthSmooth = 5;
+        }
+        onAwake() {
+            this.rot = new Laya.Quaternion();
+            this._upVec = new Laya.Vector3(0, 1, 0);
+            this._forwardVec = new Laya.Vector3(0, 0, 1);
+            this._camera = this.owner;
+            this._newPos = new Laya.Vector3(0, 0, 0);
+            this._newRoation = new Laya.Quaternion();
+            this._followVec3 = new Vector3();
+            this._disPosVec = new Vector3();
+            this._cameraNewPos = new Vector3();
+            this._distanceUpVec3 = new Vector3();
+            this._distanceAwayVec3 = new Vector3();
+        }
+        onEnable() {
+        }
+        onDisable() {
+        }
+        onUpdate() {
+            if (!this._player) {
+                this._player = SceneManager.Instance.player;
+            }
+            if (!this._player)
+                return;
+            let nu = Laya.timer.delta * 0.0001;
+            if (SceneManager.Instance.player) {
+                Vector3.subtract(this._player.transform.position, this._camera.transform.position, this._followVec3);
+                this._camera.transform.position = this._followVec3;
+                Vector3.scale(this._upVec, this._distanceUp, this._distanceUpVec3);
+                Vector3.scale(this._forwardVec, this._distanceAway, this._distanceAwayVec3);
+                Vector3.add(this._player.transform.position, this._distanceUpVec3, this._disPosVec);
+                Vector3.subtract(this._disPosVec, this._distanceAwayVec3, this._disPosVec);
+                Vector3.lerp(this._camera.transform.position, this._disPosVec, Laya.timer.delta, this._cameraNewPos);
+                this._camera.transform.position = this._cameraNewPos;
+                this._camera.transform.lookAt(this._player.transform.position, this._upVec);
+            }
+        }
+    }
+
+    class PlayerRig extends Laya.Script3D {
+        constructor() { super(); }
+        onAwake() {
+        }
+        onEnable() {
+        }
+        onStart() {
+        }
+        onDisable() {
+        }
+        onUpdate() {
+        }
+    }
+
+    class TriggerBehavior extends Laya.Script3D {
+        constructor() {
+            super();
+        }
+        onTriggerEnter(other) {
+            if (other.owner.name == "Player") {
+                if (this.type == TriggerType.Gate) {
+                }
+                else if (this.type == TriggerType.AngleChest) {
+                }
+                else if (this.type == TriggerType.DemonChest) {
+                }
+            }
+        }
+    }
+    var TriggerType;
+    (function (TriggerType) {
+        TriggerType[TriggerType["Gate"] = 0] = "Gate";
+        TriggerType[TriggerType["AngleChest"] = 1] = "AngleChest";
+        TriggerType[TriggerType["DemonChest"] = 2] = "DemonChest";
+    })(TriggerType || (TriggerType = {}));
+
+    class PlayerManager {
+        constructor() { }
+        static get Instance() {
+            if (!this._instance) {
+                this._instance = new PlayerManager();
+            }
+            return this._instance;
+        }
+    }
+
+    var Vector3$1 = Laya.Vector3;
+    class LevelManager {
+        constructor() {
+            this.gateTurnPt = new Vector3$1();
+            this.anglePtArr = [];
+            this.demonPtArr = [];
+        }
+        static get Instance() {
+            if (!this._instance) {
+                this._instance = new LevelManager();
+            }
+            return this._instance;
+        }
+        SetLevelSceneObjectData(levelScene) {
+            let player = levelScene.getChildByName("Player");
+            player.addComponent(PlayerRig);
+            PlayerManager.Instance.player = player;
+            let mainCamera = levelScene.getChildByName("Main Camera");
+            mainCamera.addComponent(MainCamera);
+            this._SetSceneDynamicObject(levelScene);
+            this._SetTriggerObject(levelScene);
+            this._SetPathPointObject(levelScene);
+            this._SetItemObject(levelScene);
+        }
+        _SetItemObject(levelScene) {
+            let item = levelScene.getChildByName("Item");
+            for (let i = 0; i < item.numChildren; i++) {
+                item.getChildAt(i).addComponent(ItemBehavior);
+            }
+        }
+        _SetPathPointObject(levelScene) {
+            let pathPointObject = levelScene.getChildByName("PathPointObject");
+            this.gateTurnPt = pathPointObject.getChildByName("GateTurnPt").transform.position;
+            this.anglePtArr.push(pathPointObject.getChildByName("AnglePt_1").transform.position);
+            this.anglePtArr.push(pathPointObject.getChildByName("AnglePt_2").transform.position);
+            this.anglePtArr.push(pathPointObject.getChildByName("AnglePt_3").transform.position);
+            this.anglePtArr.push(pathPointObject.getChildByName("AnglePt_4").transform.position);
+            this.anglePtArr.push(pathPointObject.getChildByName("AnglePt_5").transform.position);
+            this.demonPtArr.push(pathPointObject.getChildByName("DemonPt_1").transform.position);
+            this.demonPtArr.push(pathPointObject.getChildByName("DemonPt_2").transform.position);
+            this.demonPtArr.push(pathPointObject.getChildByName("DemonPt_3").transform.position);
+            this.demonPtArr.push(pathPointObject.getChildByName("DemonPt_4").transform.position);
+            this.demonPtArr.push(pathPointObject.getChildByName("DemonPt_5").transform.position);
+        }
+        _SetSceneDynamicObject(levelScene) {
+            let sceneDynamicObject = levelScene.getChildByName("SceneDynamicObject");
+            let left_door = sceneDynamicObject.getChildByName("Column_Left");
+            let right_door = sceneDynamicObject.getChildByName("Column_Right");
+            let gateBehavior = left_door.getChildAt(0).addComponent(GateBehavior);
+            gateBehavior.direction = "left";
+            gateBehavior = right_door.getChildAt(0).addComponent(GateBehavior);
+            gateBehavior.direction = "right";
+            let angleChest = sceneDynamicObject.getChildByName("AngleChest").getChildByName("GameOject").getChildByName("ChestUpAngel");
+            let demonChest = sceneDynamicObject.getChildByName("DemonChest").getChildByName("GameOject").getChildByName("ChestUpDemon");
+            let chestBehavior = angleChest.addComponent(ChestBehavior);
+            chestBehavior = demonChest.addComponent(ChestBehavior);
+        }
+        _SetTriggerObject(levelScene) {
+            let triggerObject = levelScene.getChildByName("TrigerObject");
+            let gateTrigger = triggerObject.getChildByName("GateTrigger");
+            let angleChestTrigger = triggerObject.getChildByName("AngleChestTrigger");
+            let demonChestTrigger = triggerObject.getChildByName("DemonChestTrigger");
+            let triggerBehavior = gateTrigger.addComponent(TriggerBehavior);
+            triggerBehavior.type = TriggerType.Gate;
+            triggerBehavior = angleChestTrigger.addComponent(TriggerBehavior);
+            triggerBehavior.type = TriggerType.AngleChest;
+            triggerBehavior = demonChestTrigger.addComponent(TriggerBehavior);
+            triggerBehavior.type = TriggerType.DemonChest;
+        }
+    }
+
+    class SceneManager {
+        constructor() { this._Init(); }
+        static get Instance() {
+            if (this._instance == null) {
+                this._instance = new SceneManager();
+            }
+            return this._instance;
+        }
+        _Init() {
+            GameEvent.eventDispatcher.on(GameEventType.EnterLevel, this, this._EnterLevel);
+        }
+        _EnterLevel() {
+            let levelScene = this.gameScene.InitScene();
+            LevelManager.Instance.SetLevelSceneObjectData(levelScene);
+        }
+    }
 
     var Scene = Laya.Scene;
     var REG = Laya.ClassUtils.regClass;
@@ -44,8 +325,12 @@
         constructor() {
             super();
             this.startBtn.alpha = 0;
-            let levelSp3d = Laya.loader.getRes("res/Asset3D/Conventional/level1.ls");
-            this.addChild(levelSp3d);
+        }
+        InitScene() {
+            let levelAssetPath = AssetsPathManager.GetLevelAssetsPath(GameDataManager.Instance.curLevelNu);
+            let levelScene3d = Laya.loader.getRes(levelAssetPath);
+            this.addChild(levelScene3d);
+            return levelScene3d;
         }
     }
 
@@ -84,9 +369,8 @@
         }
         onAssetLoaded() {
             console.log("ui资源加载结束");
-            let resource = [
-                "res/Asset3D/Conventional/level1.ls"
-            ];
+            let resource = AssetsPathManager.Assets3dPath();
+            console.log(resource);
             Laya.loader.create(resource, Laya.Handler.create(this, this.onAsset3DLoaded), Handler.create(this, this.onLoading, null, false));
         }
         onLoading(progress) {
@@ -97,7 +381,11 @@
         }
         onAsset3DLoaded() {
             console.log("3d资源加载结束");
-            Laya.stage.addChild(new MainUI());
+            GameDataManager.Instance.InitData();
+            let gameScene = new MainUI();
+            SceneManager.Instance.gameScene = gameScene;
+            Laya.stage.addChild(gameScene);
+            GameEvent.eventDispatcher.event(GameEventType.EnterLevel);
         }
     }
     new Main();

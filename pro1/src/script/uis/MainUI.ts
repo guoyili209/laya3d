@@ -4,6 +4,8 @@ import MainCamera from "../Scene3D/MainCamera";
 import Movement from "../Scene3D/Movement";
 import { ui } from "../../ui/layaMaxUI";
 import Sprite3D = Laya.Sprite3D;
+import { AssetsPathManager } from "../../Managers/AssetsPathManager";
+import { GameDataManager } from "../../Managers/GameDataManager";
 /**
  * 本示例采用非脚本的方式实现，而使用继承页面基类，实现页面逻辑。在IDE里面设置场景的Runtime属性即可和场景进行关联
  * 相比脚本方式，继承式页面类，可以直接使用页面定义的属性（通过IDE内var属性定义），比如this.tipLbll，this.scoreLbl，具有代码提示效果
@@ -21,16 +23,12 @@ export default class MainUI extends ui.MainUI {
         // camera.transform.rotate(new Laya.Vector3(-30, 0, 0), true, false);
         // camera.addComponent(MainCamera);
 
-        let levelSp3d: Laya.Scene3D = Laya.loader.getRes("res/Asset3D/Conventional/level1.ls");
-        this.addChild(levelSp3d);
+
         // Laya.Sprite3D.load("res/Asset3D/Conventional/level_test.lh", Laya.Handler.create(this, function (sp) {
         // scene.addChild(sp);
         // let cameraSpawnPt: Sprite3D = sp.getChildByName("CameraSpawn") as Sprite3D;
         // camera.transform.position = cameraSpawnPt.transform.position;
         // }));
-
-
-
 
         //添加方向光
         // var directionLight: Laya.DirectionLight = scene.addChild(new Laya.DirectionLight()) as Laya.DirectionLight;
@@ -52,5 +50,12 @@ export default class MainUI extends ui.MainUI {
         // scenemMgr.player = box;
 
         // Laya.Vector3.subtract(camera.transform.position, box.transform.position, mainCamera.direction);
+    }
+
+    public InitScene(): Laya.Scene3D {
+        let levelAssetPath: string = AssetsPathManager.GetLevelAssetsPath(GameDataManager.Instance.curLevelNu);
+        let levelScene3d: Laya.Scene3D = Laya.loader.getRes(levelAssetPath);
+        this.addChild(levelScene3d);
+        return levelScene3d;
     }
 }

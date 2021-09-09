@@ -1,4 +1,8 @@
+import { GameEvent, GameEventType } from "./Events/GameEvent";
 import GameConfig from "./GameConfig";
+import { AssetsPathManager } from "./Managers/AssetsPathManager";
+import { GameDataManager } from "./Managers/GameDataManager";
+import { SceneManager } from "./Managers/SceneManager";
 import MainUI from "./script/uis/MainUI";
 import { ui } from "./ui/layaMaxUI";
 import Loader = Laya.Loader;
@@ -45,9 +49,8 @@ class Main {
 	private onAssetLoaded(): void {
 		// 使用texture
 		console.log("ui资源加载结束");
-		let resource: Array<string> = [
-			"res/Asset3D/Conventional/level1.ls"
-		];
+		let resource: Array<string> = AssetsPathManager.Assets3dPath();
+		console.log(resource);
 		Laya.loader.create(resource, Laya.Handler.create(this, this.onAsset3DLoaded), Handler.create(this, this.onLoading, null, false));
 	}
 
@@ -59,12 +62,17 @@ class Main {
 	private onError(err: String): void {
 		console.log("加载失败: " + err);
 	}
-
+	
 	onAsset3DLoaded(): void {
 		console.log("3d资源加载结束");
 		//加载IDE指定的场景
 		// GameConfig.startScene && Laya.Scene.open(GameConfig.startScene);
-		Laya.stage.addChild(new MainUI());
+		GameDataManager.Instance.InitData();
+		let gameScene: MainUI = new MainUI();
+		SceneManager.Instance.gameScene = gameScene;
+		Laya.stage.addChild(gameScene);
+
+		GameEvent.eventDispatcher.event(GameEventType.EnterLevel);
 	}
 }
 //激活启动类

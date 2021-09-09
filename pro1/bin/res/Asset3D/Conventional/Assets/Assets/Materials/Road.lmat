@@ -1,7 +1,7 @@
 {
 	"version":"LAYAMATERIAL:02",
 	"props":{
-		"type":"Laya.BlinnPhongMaterial",
+		"type":"Laya.UnlitMaterial",
 		"name":"Road",
 		"renderStates":[
 			{
@@ -13,34 +13,12 @@
 				"depthTest":515
 			}
 		],
+		"enableVertexColor":false,
 		"alphaTest":false,
 		"alphaTestValue":0.5,
 		"renderQueue":2000,
-		"metallic":0,
-		"smoothness":0.5,
-		"smoothnessTextureScale":1,
-		"smoothnessSource":0,
-		"normalTextureScale":1,
-		"parallaxTextureScale":0.02,
-		"occlusionTextureStrength":1,
-		"textures":[
-			{
-				"name":"albedoTexture",
-				"path":"../Level/Origin/b_level 0/HyperColourpaletteBlackBack.jpg",
-				"constructParams":[
-					512,
-					512,
-					0,
-					true
-				],
-				"propertyParams":{
-					"filterMode":1,
-					"wrapModeU":0,
-					"wrapModeV":0,
-					"anisoLevel":1
-				}
-			}
-		],
+		"albedoIntensity":1,
+		"textures":[],
 		"vectors":[
 			{
 				"name":"tilingOffset",
@@ -54,18 +32,9 @@
 			{
 				"name":"albedoColor",
 				"value":[
-					1,
-					1,
-					1,
-					1
-				]
-			},
-			{
-				"name":"emissionColor",
-				"value":[
-					0,
-					0,
-					0,
+					0.6698113,
+					0.6698113,
+					0.6698113,
 					1
 				]
 			}

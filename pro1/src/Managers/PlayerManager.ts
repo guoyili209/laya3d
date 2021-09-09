@@ -1,4 +1,5 @@
 import MeshSprite3D = Laya.MeshSprite3D;
+import Sprite3D = Laya.Sprite3D;
 export class PlayerManager {
     constructor() { }
     private static _instance: PlayerManager;
@@ -8,5 +9,5 @@ export class PlayerManager {
         }
         return this._instance;
     }
-    public player: MeshSprite3D;
+    public player: Sprite3D;
 }
