@@ -175,10 +175,15 @@
         onEnable() {
         }
         onStart() {
+            this._speedVec3 = new Laya.Vector3(0, 0, 1);
+            this._animator = this.owner.getComponent(Laya.Animator);
+            this._charactorController = this.owner.getComponent(Laya.CharacterController);
         }
         onDisable() {
         }
         onUpdate() {
+            this._speedVec3.z *= Laya.timer.delta;
+            this._charactorController.move(this._speedVec3);
         }
     }
 
@@ -328,7 +333,7 @@
         InitScene() {
             let levelAssetPathObj = AssetsPathManager.GetLevelAssetsPath(GameDataManager.Instance.curLevelNu);
             let levelScene3d = Laya.loader.getRes(levelAssetPathObj.url);
-            this.addChild(levelScene3d);
+            this.addChildAt(levelScene3d, 0);
             return levelScene3d;
         }
     }
