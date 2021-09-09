@@ -1,6 +1,3 @@
-2021/09/09-18:23:27.394 4b07 Reusing MANIFEST /Users/gll/Desktop/work/pro1/pro1_laya/laya3d/pro1/.laya/chrome/Default/Local Storage/leveldb/MANIFEST-000001
-2021/09/09-18:23:27.396 4b07 Recovering log #4
-2021/09/09-18:23:27.399 4b07 Reusing old log /Users/gll/Desktop/work/pro1/pro1_laya/laya3d/pro1/.laya/chrome/Default/Local Storage/leveldb/000004.log 
-2021/09/09-18:25:27.829 4807 Level-0 table #8: started
-2021/09/09-18:25:27.838 4807 Level-0 table #8: 8116 bytes OK
-2021/09/09-18:25:27.850 4807 Delete type=0 #4
+2021/09/09-21:19:00.248 5558 Reusing MANIFEST C:\Users\guoyili\Desktop\LayaWork\bandou\laya3d\pro1\.laya\chrome\Default\Local Storage\leveldb/MANIFEST-000001
+2021/09/09-21:19:00.250 5558 Recovering log #3
+2021/09/09-21:19:00.252 5558 Reusing old log C:\Users\guoyili\Desktop\LayaWork\bandou\laya3d\pro1\.laya\chrome\Default\Local Storage\leveldb/000003.log 

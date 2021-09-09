@@ -38,16 +38,15 @@
         constructor() {
         }
         static Assets3dPath() {
-            return this.levelAssetPathArr;
+            return AssetsPathManager.levelAssetPathArr;
         }
         static GetLevelAssetsPath(levelNu) {
-            console.log(levelNu);
-            return this.levelAssetPathArr[levelNu - 1];
+            return AssetsPathManager.levelAssetPathArr[levelNu - 1];
         }
     }
     AssetsPathManager.levelAssetPathArr = [
-        "res/Asset3D/Conventional/level1.ls",
-        "res/Asset3D/Conventional/level2.ls"
+        { url: "res/Asset3D/Conventional/level1.ls" },
+        { url: "res/Asset3D/Conventional/level2.ls" }
     ];
 
     class GameDataManager {
@@ -327,8 +326,8 @@
             this.startBtn.alpha = 0;
         }
         InitScene() {
-            let levelAssetPath = AssetsPathManager.GetLevelAssetsPath(GameDataManager.Instance.curLevelNu);
-            let levelScene3d = Laya.loader.getRes(levelAssetPath);
+            let levelAssetPathObj = AssetsPathManager.GetLevelAssetsPath(GameDataManager.Instance.curLevelNu);
+            let levelScene3d = Laya.loader.getRes(levelAssetPathObj.url);
             this.addChild(levelScene3d);
             return levelScene3d;
         }

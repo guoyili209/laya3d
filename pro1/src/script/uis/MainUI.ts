@@ -53,8 +53,8 @@ export default class MainUI extends ui.MainUI {
     }
 
     public InitScene(): Laya.Scene3D {
-        let levelAssetPath: string = AssetsPathManager.GetLevelAssetsPath(GameDataManager.Instance.curLevelNu);
-        let levelScene3d: Laya.Scene3D = Laya.loader.getRes(levelAssetPath);
+        let levelAssetPathObj: { url: string } = AssetsPathManager.GetLevelAssetsPath(GameDataManager.Instance.curLevelNu);
+        let levelScene3d: Laya.Scene3D = Laya.loader.getRes(levelAssetPathObj.url);
         this.addChild(levelScene3d);
         return levelScene3d;
     }
